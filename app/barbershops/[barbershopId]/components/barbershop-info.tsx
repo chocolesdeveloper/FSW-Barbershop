@@ -5,7 +5,9 @@ import { ChevronLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { SideMenu } from "@/app/components/side-menu";
 import { Button } from "@/app/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/app/components/ui/sheet";
 
 interface BarbershopInfoProps {
   barbershop: Barbershop;
@@ -29,13 +31,21 @@ export function BarbershopInfo({ barbershop }: BarbershopInfoProps) {
           <ChevronLeftIcon />
         </Button>
 
-        <Button
-          size="icon"
-          variant="outline"
-          className="absolute right-3 top-3 z-50"
-        >
-          <MenuIcon />
-        </Button>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              variant="outline"
+              className="absolute right-3 top-3 z-50"
+            >
+              <MenuIcon size={18} />
+            </Button>
+          </SheetTrigger>
+
+          <SheetContent className="p-0">
+            <SideMenu />
+          </SheetContent>
+        </Sheet>
 
         <Image
           src={barbershop.imageUrl}
