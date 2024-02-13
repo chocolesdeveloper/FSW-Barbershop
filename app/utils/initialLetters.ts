@@ -1,4 +1,4 @@
-export function initialLetters(name: string) {
+export function initialLetters(name: string): String {
   const nameAndSurname = name.split(" ");
 
   let initalLetter = "";
