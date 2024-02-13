@@ -5,14 +5,18 @@ import { format, setHours, setMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import colors from "tailwindcss/colors";
 
 import { Button } from "@/app/components/ui/button";
 import { Calendar } from "@/app/components/ui/calendar";
 import { Card, CardContent } from "@/app/components/ui/card";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetFooter,
   SheetHeader,
@@ -35,8 +39,9 @@ export function ServiceItem({
   barbershop,
 }: ServiceItemProps) {
   const { data } = useSession();
+  const router = useRouter();
 
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>(undefined);
   const [hour, setHour] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
 
@@ -73,8 +78,29 @@ export function ServiceItem({
         date: newDate,
         userId: data.user.id,
       });
+
+      setHour(undefined);
+      setDate(undefined);
+
+      toast("Agendamento realizado com sucesso!", {
+        description: `Seu angedamento na ${barbershop.name} foi marcado para ${format(newDate, "dd'/'LL 'ás' HH':'mm")}`,
+        action: {
+          label: "Visualizar",
+          onClick: () => router.push("/bookings"),
+        },
+        style: {
+          backgroundColor: colors.emerald["100"],
+        },
+      });
     } catch (err) {
+      console.error(err);
+
       setLoading(false);
+      toast.error("Não foi possível realizar o agendamento!", {
+        style: {
+          backgroundColor: colors.red["300"],
+        },
+      });
     } finally {
       setLoading(false);
     }
@@ -188,20 +214,22 @@ export function ServiceItem({
                 </div>
 
                 <SheetFooter className="px-5">
-                  <Button
-                    onClick={handleBookingSubmit}
-                    disabled={!(hour && date) || loading}
-                    className="w-full"
-                  >
-                    {loading ? (
-                      <div className="flex items-center gap-2">
-                        <Loader2 className="h-2 w-4 animate-spin" />
-                        Finalizando agendamento
-                      </div>
-                    ) : (
-                      <>Confirmar reserva</>
-                    )}
-                  </Button>
+                  <SheetClose className="w-full">
+                    <Button
+                      onClick={handleBookingSubmit}
+                      disabled={!(hour && date) || loading}
+                      className="w-full"
+                    >
+                      {loading ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-2 w-4 animate-spin" />
+                          Finalizando agendamento
+                        </div>
+                      ) : (
+                        <>Confirmar reserva</>
+                      )}
+                    </Button>
+                  </SheetClose>
                 </SheetFooter>
               </SheetContent>
             </Sheet>

@@ -2,6 +2,7 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 
 import { Footer } from "./components/footer";
 import { AuthProvider } from "./providers/auth";
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className={`${inter.className} dark`}>
         <AuthProvider>
           {children}
+          <Toaster />
           <Footer />
         </AuthProvider>
       </body>
