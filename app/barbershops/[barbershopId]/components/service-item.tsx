@@ -1,18 +1,50 @@
 "use client";
 
-import { Service } from "@prisma/client";
+import { Barbershop, Service } from "@prisma/client";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/app/components/ui/button";
+import { Calendar } from "@/app/components/ui/calendar";
 import { Card, CardContent } from "@/app/components/ui/card";
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/app/components/ui/sheet";
+
+import { generateDayTimeList } from "./helpers/hours";
 
 interface ServiceItemProps {
+  barbershop: Barbershop;
   service: Service;
   isAuthenticated?: boolean;
 }
 
-export function ServiceItem({ service, isAuthenticated }: ServiceItemProps) {
+export function ServiceItem({
+  service,
+  isAuthenticated,
+  barbershop,
+}: ServiceItemProps) {
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  const [hour, setHour] = useState<string | undefined>();
+
+  function handleHourClick(hour: string) {
+    setHour(hour);
+  }
+
+  function handleDateClick(date: Date | undefined) {
+    setDate(date);
+    setHour(undefined);
+  }
+
   function handleBookingClick() {
     if (!isAuthenticated) {
       signIn("google");
@@ -21,9 +53,13 @@ export function ServiceItem({ service, isAuthenticated }: ServiceItemProps) {
     //TODO: abrir modal de agendamento
   }
 
+  const timeList = useMemo(() => {
+    return date ? generateDayTimeList(date) : [];
+  }, [date]);
+
   return (
     <Card>
-      <CardContent className="flex items-center gap-4 p-3">
+      <CardContent className="flex items-center gap-4 py-3">
         <Image
           src={service.imageUrl}
           alt={service.name}
@@ -43,9 +79,94 @@ export function ServiceItem({ service, isAuthenticated }: ServiceItemProps) {
                 currency: "BRL",
               }).format(Number(service.price))}
             </p>
-            <Button variant="secondary" onClick={handleBookingClick}>
-              Agendar
-            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="secondary" onClick={handleBookingClick}>
+                  Reservar
+                </Button>
+              </SheetTrigger>
+
+              <SheetContent className="flex flex-col overflow-y-auto p-0 pb-4 [&::-webkit-scrollbar]:hidden">
+                <SheetHeader className="border-b border-secondary px-5 py-6 text-left">
+                  <SheetTitle>Fazer Reserva</SheetTitle>
+                </SheetHeader>
+
+                <div className="flex w-full flex-1 flex-col">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={handleDateClick}
+                    fromDate={new Date()}
+                    classNames={{
+                      month: "w-full",
+                      head_cell: "w-full mt-3",
+                      cell: "w-full",
+                    }}
+                    className="mt-6 capitalize"
+                  />
+                  {/* Mostrar lista de horario se tiver vaga selecionada */}
+                  {date && (
+                    <div className="flex gap-2 overflow-x-auto border-t border-secondary px-5 py-6 [&::-webkit-scrollbar]:hidden">
+                      {timeList.map((time) => (
+                        <Button
+                          key={time}
+                          variant={time === hour ? "default" : "outline"}
+                          className="rounded-full"
+                          onClick={() => handleHourClick(time)}
+                        >
+                          {time}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="border-t border-secondary px-5 py-6">
+                    <Card>
+                      <CardContent className="flex flex-col gap-3 p-3">
+                        <div className="flex justify-between">
+                          <h2 className="font-bold">{service.name}</h2>
+                          <h3 className="text-sm font-bold">
+                            {Intl.NumberFormat("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            }).format(Number(service.price))}
+                          </h3>
+                        </div>
+
+                        {date && (
+                          <div className="flex justify-between text-sm">
+                            <h3 className="text-gray-400">Data</h3>
+                            <h4 className="capitalize">
+                              {format(date, "dd 'de' MMMM", {
+                                locale: ptBR,
+                              })}
+                            </h4>
+                          </div>
+                        )}
+
+                        {hour && (
+                          <div className="flex justify-between text-sm">
+                            <h3 className="text-gray-400">Horário</h3>
+                            <h4 className="capitalize">{hour}</h4>
+                          </div>
+                        )}
+
+                        <div className="flex justify-between text-sm">
+                          <h3 className="text-gray-400">Barbearia</h3>
+                          <h4 className="capitalize">{barbershop.name}</h4>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                <SheetFooter className="px-5">
+                  <Button disabled={!(hour && date) ?? true} className="w-full">
+                    Confirmar reserva
+                  </Button>
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </CardContent>

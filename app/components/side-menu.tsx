@@ -41,7 +41,7 @@ export function SideMenu() {
               </AvatarFallback>
 
               <AvatarImage
-                src={data.user.image ?? ""}
+                src={data?.user && data.user.image!}
                 alt={`Imagem de perdil de ${data.user?.name}`}
               />
             </Avatar>
