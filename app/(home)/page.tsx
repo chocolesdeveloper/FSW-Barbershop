@@ -1,6 +1,8 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { getServerSession } from "next-auth";
 
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { BookingItem } from "../components/booking-item";
 import { Header } from "../components/header";
 import { prismaClient } from "../lib/prisma";
@@ -8,7 +10,25 @@ import { BarbershopItem } from "./components/barbershop-item";
 import { Search } from "./components/search";
 
 export default async function Home() {
-  const barbershops = await prismaClient.barbershop.findMany();
+  const session = await getServerSession(authOptions);
+
+  const [barbershops, confirmedBookings] = await Promise.all([
+    prismaClient.barbershop.findMany(),
+    session?.user
+      ? await prismaClient.booking.findMany({
+          where: {
+            userId: session.user.id,
+            date: {
+              gte: new Date(),
+            },
+          },
+          include: {
+            service: true,
+            barbershop: true,
+          },
+        })
+      : Promise.resolve([]),
+  ]);
 
   const today = format(new Date(), "iiii',' d 'de' MMMM", {
     locale: ptBR,
@@ -19,7 +39,7 @@ export default async function Home() {
       <Header />
 
       <div className="mt-6 px-5">
-        <h2 className="text-xl font-bold">Olá William!</h2>
+        <h2 className="text-xl font-bold">Olá {session?.user.name}!</h2>
         <p className="text-sm capitalize">{today}</p>
       </div>
 
@@ -27,11 +47,15 @@ export default async function Home() {
         <Search />
       </div>
 
-      <div className="mt-6 px-5">
-        <h2 className="mb-3 text-xs font-bold uppercase leading-4 text-gray-400">
+      <div className="mt-6">
+        <h2 className="mb-3 px-5 text-xs font-bold uppercase leading-4 text-gray-400">
           agendamentos
         </h2>
-        {/* <BookingItem /> */}
+        <div className="flex gap-3 overflow-x-auto px-5 [&::-webkit-scrollbar]:hidden">
+          {confirmedBookings.map((booking) => (
+            <BookingItem key={booking.id} booking={booking} />
+          ))}
+        </div>
       </div>
 
       <div className="mt-6">
