@@ -10,6 +10,17 @@ import { toast } from "sonner";
 
 import { cancelBoooking } from "../actions/cancel-booking";
 import { initialLetters } from "../utils/initialLetters";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -169,21 +180,54 @@ export function BookingItem({ booking }: BookingItemProps) {
                 Voltar
               </Button>
             </SheetClose>
-            <Button
-              disabled={!isBookingConfirmed || isDeleteLoading}
-              variant="destructive"
-              className="w-full"
-              onClick={handleCancelClick}
-            >
-              {isDeleteLoading ? (
-                <div className="flex items-center gap-2">
-                  <Loader2 className="h-2 w-4 animate-spin" />
-                  Cancelando Reserva
-                </div>
-              ) : (
-                <>Cancelar Reservar</>
-              )}
-            </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <Button
+                  disabled={!isBookingConfirmed || isDeleteLoading}
+                  variant="destructive"
+                  className="w-full"
+                >
+                  {isDeleteLoading ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="h-2 w-4 animate-spin" />
+                      Cancelando Reserva
+                    </div>
+                  ) : (
+                    <>Cancelar Reservar</>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Deseja mesmo cancelar essa reserva?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Uma vez cancelada não será possível reverter essa ação.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="w-full flex-row items-end gap-3 px-5">
+                  <AlertDialogCancel className="w-full">
+                    Voltar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    disabled={isDeleteLoading}
+                    className="w-full"
+                    onClick={handleCancelClick}
+                  >
+                    {isDeleteLoading ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-2 w-4 animate-spin" />
+                        Cancelando Reserva
+                      </div>
+                    ) : (
+                      <>Confirmar</>
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </SheetFooter>
         </div>
       </SheetContent>

@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { prismaClient } from "@/app/lib/prisma";
 
 interface saveBookingProps {
@@ -18,4 +20,7 @@ export async function saveBooking(params: saveBookingProps) {
       date: params.date,
     },
   });
+
+  revalidatePath("/");
+  revalidatePath("/bookings");
 }
