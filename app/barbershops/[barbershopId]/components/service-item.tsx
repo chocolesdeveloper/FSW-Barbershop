@@ -1,9 +1,17 @@
 "use client";
 
 import { Barbershop, Booking, Service } from "@prisma/client";
-import { format, setHours, setMinutes } from "date-fns";
+import {
+  format,
+  isAfter,
+  isBefore,
+  isToday,
+  setHours,
+  setMinutes,
+} from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
+import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
@@ -101,7 +109,9 @@ export function ServiceItem({
         description: `Seu angedamento na ${barbershop.name} foi marcado para ${format(newDate, "dd'/'LL 'ás' HH':'mm")}`,
         action: {
           label: "Visualizar",
-          onClick: () => router.push("/bookings"),
+          onClick: () => {
+            router.push("/bookings");
+          },
         },
         style: {
           backgroundColor: colors.emerald["100"],
@@ -126,9 +136,27 @@ export function ServiceItem({
       return [];
     }
 
+    const currentHour = new Date().getHours();
+    const currentMinute = new Date().getMinutes();
+
     return generateDayTimeList(date).filter((time) => {
       const timeHour = Number(time.split(":")[0]);
       const timeMinutes = Number(time.split(":")[1]);
+
+      const isCurrentDay = isToday(date);
+
+      if (!isCurrentDay) {
+        return true;
+      }
+
+      const currentTimeInMinutes = currentHour * 60 + currentMinute;
+      const timeToCheckInMinutes = timeHour * 60 + timeMinutes;
+
+      const isTimeAfterCurrent = timeToCheckInMinutes > currentTimeInMinutes;
+
+      if (!isTimeAfterCurrent) {
+        return false;
+      }
 
       const booking = dayBookings.find((booking) => {
         const bookingHour = booking.date.getHours();
