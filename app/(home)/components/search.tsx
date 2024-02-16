@@ -20,13 +20,17 @@ const formSchema = z.object({
 
 type SearchType = z.infer<typeof formSchema>;
 
-export function Search() {
+interface SearchProps {
+  search?: string;
+}
+
+export function Search({ search }: SearchProps) {
   const router = useRouter();
 
   const form = useForm<SearchType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      search: "",
+      search: search ?? "",
     },
   });
 

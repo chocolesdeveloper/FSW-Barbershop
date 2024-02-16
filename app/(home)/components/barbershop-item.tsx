@@ -36,8 +36,7 @@ export function BarbershopItem({ barbershop }: BarbershopItemProps) {
             alt={barbershop.name}
             width={159}
             height={159}
-            sizes="100vw"
-            className="h-[159px] w-auto rounded-lg object-cover"
+            className="h-[159px] w-full rounded-lg object-cover"
           />
         </div>
 
