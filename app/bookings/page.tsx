@@ -2,10 +2,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import { BookingItem } from "../components/booking-item";
 import { Header } from "../components/header";
 import { prismaClient } from "../lib/prisma";
+import { authOptions } from "../utils/authOptions";
 
 export default async function BookingsPage() {
   const session = await getServerSession(authOptions);

@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prismaClient } from "@/app/lib/prisma";
+import { authOptions } from "@/app/utils/authOptions";
 
 import { BarbershopInfo } from "./components/barbershop-info";
 import { ServiceItem } from "./components/service-item";
