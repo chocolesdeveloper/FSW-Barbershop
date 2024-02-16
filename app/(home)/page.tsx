@@ -12,23 +12,29 @@ import { Search } from "./components/search";
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
-  const [barbershops, confirmedBookings] = await Promise.all([
-    prismaClient.barbershop.findMany(),
-    session?.user
-      ? await prismaClient.booking.findMany({
-          where: {
-            userId: session.user.id,
-            date: {
-              gte: new Date(),
+  const [barbershops, recommededBarberShops, confirmedBookings] =
+    await Promise.all([
+      prismaClient.barbershop.findMany(),
+      prismaClient.barbershop.findMany({
+        orderBy: {
+          id: "asc",
+        },
+      }),
+      session?.user
+        ? await prismaClient.booking.findMany({
+            where: {
+              userId: session.user.id,
+              date: {
+                gte: new Date(),
+              },
             },
-          },
-          include: {
-            service: true,
-            barbershop: true,
-          },
-        })
-      : Promise.resolve([]),
-  ]);
+            include: {
+              service: true,
+              barbershop: true,
+            },
+          })
+        : Promise.resolve([]),
+    ]);
 
   const today = format(new Date(), "iiii',' d 'de' MMMM", {
     locale: ptBR,
@@ -82,7 +88,7 @@ export default async function Home() {
           Populares
         </h2>
         <div className="flex gap-4 overflow-x-auto px-5 [&::-webkit-scrollbar]:hidden">
-          {barbershops.map((barbershop) => (
+          {recommededBarberShops.map((barbershop) => (
             <BarbershopItem barbershop={barbershop} key={barbershop.id} />
           ))}
         </div>
