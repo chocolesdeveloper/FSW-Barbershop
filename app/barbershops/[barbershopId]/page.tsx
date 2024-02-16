@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { prismaClient } from "@/app/lib/prisma";
@@ -17,8 +18,7 @@ export default async function BarbershopDetailsPage({
 }: BarbershopDetailsPageProps) {
   const session = await getServerSession(authOptions);
   if (!params.barbershopId) {
-    // TODO: Redirect to homepage
-    return null;
+    return redirect("/");
   }
 
   const barbershop = await prismaClient.barbershop.findUnique({
@@ -31,8 +31,7 @@ export default async function BarbershopDetailsPage({
   });
 
   if (!barbershop) {
-    //TODO: Redirect to homepage
-    return null;
+    return redirect("/");
   }
 
   return (
