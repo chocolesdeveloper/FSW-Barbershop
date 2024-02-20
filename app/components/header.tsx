@@ -2,6 +2,7 @@ import { MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { HeaderDesktop } from "./header-desktop";
 import { SideMenu } from "./side-menu";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
@@ -22,17 +23,23 @@ export function Header() {
             />
           </Link>
 
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="outline">
-                <MenuIcon size={18} />
-              </Button>
-            </SheetTrigger>
+          <div className="lg:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button size="icon" variant="outline">
+                  <MenuIcon size={16} />
+                </Button>
+              </SheetTrigger>
 
-            <SheetContent className="p-0">
-              <SideMenu />
-            </SheetContent>
-          </Sheet>
+              <SheetContent className="p-0">
+                <SideMenu />
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          <div className="hidden h-10 lg:block">
+            <HeaderDesktop />
+          </div>
         </CardContent>
       </Card>
     </header>

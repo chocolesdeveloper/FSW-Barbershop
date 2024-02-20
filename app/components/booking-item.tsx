@@ -152,7 +152,7 @@ export function BookingItem({ booking }: BookingItemProps) {
             </SheetClose>
 
             <AlertDialog>
-              <AlertDialogTrigger>
+              <AlertDialogTrigger asChild>
                 <Button
                   disabled={!isBookingConfirmed || isDeleteLoading}
                   variant="destructive"
@@ -182,7 +182,7 @@ export function BookingItem({ booking }: BookingItemProps) {
                     Voltar
                   </AlertDialogCancel>
                   <AlertDialogAction
-                    disabled={isDeleteLoading || isBookingConfirmed}
+                    disabled={isDeleteLoading || !isBookingConfirmed}
                     className="w-full"
                     onClick={handleCancelClick}
                   >
