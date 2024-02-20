@@ -1,7 +1,7 @@
 "use client";
 
 import { Prisma } from "@prisma/client";
-import { format, isFuture } from "date-fns";
+import { format, isAfter, isFuture } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 
 import { cancelBoooking } from "../actions/cancel-booking";
 import { initialLetters } from "../utils/initialLetters";
+import { BookingInfo } from "./booking-info";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -141,38 +142,7 @@ export function BookingItem({ booking }: BookingItemProps) {
             {isBookingConfirmed ? "Confirmado" : "Finalizado"}
           </Badge>
 
-          <Card>
-            <CardContent className="flex flex-col gap-3 p-3">
-              <div className="flex justify-between">
-                <h2 className="font-bold">{booking.service.name}</h2>
-                <h3 className="text-sm font-bold">
-                  {Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(Number(booking.service.price))}
-                </h3>
-              </div>
-
-              <div className="flex justify-between text-sm">
-                <h3 className="text-gray-400">Data</h3>
-                <h4 className="capitalize">
-                  {format(booking.date, "dd 'de' MMMM", {
-                    locale: ptBR,
-                  })}
-                </h4>
-              </div>
-
-              <div className="flex justify-between text-sm">
-                <h3 className="text-gray-400">Horário</h3>
-                <h4 className="capitalize">{format(booking.date, "HH:mm")}</h4>
-              </div>
-
-              <div className="flex justify-between text-sm">
-                <h3 className="text-gray-400">Barbearia</h3>
-                <h4 className="capitalize">{booking.barbershop.name}</h4>
-              </div>
-            </CardContent>
-          </Card>
+          <BookingInfo booking={booking} />
 
           <SheetFooter className="mt-3 flex-row gap-3">
             <SheetClose asChild>
@@ -212,7 +182,7 @@ export function BookingItem({ booking }: BookingItemProps) {
                     Voltar
                   </AlertDialogCancel>
                   <AlertDialogAction
-                    disabled={isDeleteLoading}
+                    disabled={isDeleteLoading || isBookingConfirmed}
                     className="w-full"
                     onClick={handleCancelClick}
                   >

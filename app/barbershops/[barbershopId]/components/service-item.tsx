@@ -2,9 +2,7 @@
 
 import { Barbershop, Booking, Service } from "@prisma/client";
 import { format, setHours, setMinutes } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
-import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
@@ -12,6 +10,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import colors from "tailwindcss/colors";
 
+import { BookingInfo } from "@/app/components/booking-info";
 import { Button } from "@/app/components/ui/button";
 import { Calendar } from "@/app/components/ui/calendar";
 import { Card, CardContent } from "@/app/components/ui/card";
@@ -210,61 +209,42 @@ export function ServiceItem({
                   {/* Mostrar lista de horario se tiver vaga selecionada */}
                   {date && (
                     <div className="flex gap-2 overflow-x-auto border-t border-secondary px-5 py-6 [&::-webkit-scrollbar]:hidden">
-                      {timeList.map((time) => (
-                        <Button
-                          key={time}
-                          variant={time === hour ? "default" : "outline"}
-                          className="rounded-full"
-                          onClick={() => handleHourClick(time)}
-                        >
-                          {time}
-                        </Button>
-                      ))}
+                      {timeList.length > 0 ? (
+                        timeList.map((time) => (
+                          <Button
+                            key={time}
+                            variant={time === hour ? "default" : "outline"}
+                            className="rounded-full"
+                            onClick={() => handleHourClick(time)}
+                          >
+                            {time}
+                          </Button>
+                        ))
+                      ) : (
+                        <p>Sem horario</p>
+                      )}
                     </div>
                   )}
 
                   <div className="border-t border-secondary px-5 py-6">
-                    <Card>
-                      <CardContent className="flex flex-col gap-3 p-3">
-                        <div className="flex justify-between">
-                          <h2 className="font-bold">{service.name}</h2>
-                          <h3 className="text-sm font-bold">
-                            {Intl.NumberFormat("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            }).format(Number(service.price))}
-                          </h3>
-                        </div>
-
-                        {date && (
-                          <div className="flex justify-between text-sm">
-                            <h3 className="text-gray-400">Data</h3>
-                            <h4 className="capitalize">
-                              {format(date, "dd 'de' MMMM", {
-                                locale: ptBR,
-                              })}
-                            </h4>
-                          </div>
-                        )}
-
-                        {hour && (
-                          <div className="flex justify-between text-sm">
-                            <h3 className="text-gray-400">Horário</h3>
-                            <h4 className="capitalize">{hour}</h4>
-                          </div>
-                        )}
-
-                        <div className="flex justify-between text-sm">
-                          <h3 className="text-gray-400">Barbearia</h3>
-                          <h4 className="capitalize">{barbershop.name}</h4>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <BookingInfo
+                      booking={{
+                        barbershop: barbershop,
+                        date:
+                          date && hour
+                            ? setMinutes(
+                                setHours(date, Number(hour?.split(":")[0])),
+                                Number(hour?.split(":")[1]),
+                              )
+                            : undefined,
+                        service: service,
+                      }}
+                    />
                   </div>
                 </div>
 
                 <SheetFooter className="px-5">
-                  <SheetClose className="w-full">
+                  <SheetClose className="w-full" asChild>
                     <Button
                       onClick={handleBookingSubmit}
                       disabled={!(hour && date) || loading}
