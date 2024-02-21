@@ -20,8 +20,8 @@ export function BarbershopInfo({ barbershop }: BarbershopInfoProps) {
     router.replace("/");
   }
   return (
-    <div>
-      <div className="relative h-[250px] w-full">
+    <div className="mt-10">
+      <div className="relative h-[250px] w-full lg:hidden">
         <Button
           onClick={handleBackClick}
           size="icon"
@@ -51,19 +51,45 @@ export function BarbershopInfo({ barbershop }: BarbershopInfoProps) {
           src={barbershop.imageUrl}
           alt={barbershop.name}
           fill
+          sizes="110vw"
           className="object-cover opacity-85"
         />
       </div>
 
-      <div className="border-b border-secondary px-5 pb-6 pt-3">
-        <h1 className="text-xl font-bold">{barbershop.name}</h1>
-        <div className="my-2 flex items-center gap-1">
-          <MapPinIcon className="fill-primary/40 stroke-primary" size={18} />
-          <p className="text-sm">{barbershop.address}</p>
-        </div>
-        <div className="flex items-center gap-1">
-          <StarIcon className="fill-primary/40 stroke-primary" size={18} />
-          <p className="text-sm">5,0 (899 avaliaçoes)</p>
+      <div className="border-b border-secondary px-5 pb-6 pt-3 lg:border-none lg:px-0 lg:pt-0">
+        <Image
+          src={barbershop.imageUrl}
+          alt={barbershop.name}
+          width={758}
+          height={487}
+          className="hidden w-full object-cover opacity-85 lg:block"
+        />
+        <div className="flex items-center justify-between lg:mt-5 ">
+          <div>
+            <h1 className="text-xl font-bold lg:mb-3 lg:text-4xl ">
+              {barbershop.name}
+            </h1>
+            <div className="my-2 flex items-center gap-1">
+              <MapPinIcon
+                className="fill-primary/40 stroke-primary"
+                size={18}
+              />
+              <p className="text-sm lg:text-xl">{barbershop.address}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 rounded-lg py-3 lg:flex-col lg:bg-secondary lg:px-5">
+            <StarIcon
+              className="fill-primary/40 stroke-primary lg:hidden"
+              size={18}
+            />
+            <div className="flex items-center gap-2 lg:flex-col">
+              <p className="flex items-center gap-2 text-sm lg:text-2xl">
+                <StarIcon className="hidden fill-primary/40 stroke-primary lg:block" />
+                5,0
+              </p>
+              <p className="text-sm lg:text-base">(899 avaliaçoes)</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

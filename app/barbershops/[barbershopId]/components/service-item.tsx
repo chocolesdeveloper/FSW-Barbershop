@@ -1,7 +1,7 @@
 "use client";
 
 import { Barbershop, Booking, Service } from "@prisma/client";
-import { format, setHours, setMinutes } from "date-fns";
+import { format, isToday, setHours, setMinutes } from "date-fns";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ import {
 
 import { getDayBookings } from "../actions/get-day-bookings";
 import { saveBooking } from "../actions/save-booking";
-import { generateDayTimeList } from "./helpers/hours";
+import { generateDayTimeList } from "../helpers/hours";
 
 interface ServiceItemProps {
   barbershop: Barbershop;
@@ -134,6 +134,12 @@ export function ServiceItem({
     return generateDayTimeList(date).filter((time) => {
       const timeHour = Number(time.split(":")[0]);
       const timeMinutes = Number(time.split(":")[1]);
+
+      const isDay = isToday(date);
+
+      if (!isDay) {
+        return true;
+      }
 
       const currentTimeInMinutes = currentHour * 60 + currentMinute;
       const timeToCheckInMinutes = timeHour * 60 + timeMinutes;

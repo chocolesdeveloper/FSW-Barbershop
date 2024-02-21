@@ -19,6 +19,7 @@ export function Header() {
               alt="FSW Barber"
               width={120}
               height={22}
+              sizes="100vw"
               className="h-[22px] w-auto"
             />
           </Link>

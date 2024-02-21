@@ -114,6 +114,7 @@ export function BookingItem({ booking }: BookingItemProps) {
               src="/barbershop-map.png"
               alt={booking.barbershop.name}
               fill
+              sizes="100vw"
               className="object-cover"
             />
 
