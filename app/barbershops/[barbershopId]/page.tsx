@@ -42,7 +42,7 @@ export default async function BarbershopDetailsPage({
         <Header />
       </div>
 
-      <div className="container flex gap-10 lg:px-32">
+      <div className="flex gap-10 lg:container lg:px-32">
         <div className="w-full lg:min-w-[758px]">
           <BarbershopInfo barbershop={barbershop} />
           <div className="grid gap-2 px-4 py-6 lg:grid-cols-2 lg:px-0">

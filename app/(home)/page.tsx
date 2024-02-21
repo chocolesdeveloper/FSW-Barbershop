@@ -58,7 +58,7 @@ export default async function Home() {
         }}
       />
 
-      <div className="container">
+      <div className="lg:container">
         <div className="flex items-center gap-32 overflow-hidden px-5 lg:h-[482px] lg:px-32">
           <div className="flex w-full flex-col lg:min-w-[440px] lg:gap-11">
             <div className="mt-6 lg:mt-0">
@@ -81,8 +81,8 @@ export default async function Home() {
                     agendamentos
                   </h2>
                   <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-                    <Carousel className="w-full">
-                      <CarouselContent className="flex  gap-6 px-5">
+                    <Carousel>
+                      <CarouselContent className="flex gap-6 px-5">
                         {confirmedBookings.map((booking) => (
                           <BookingItem key={booking.id} booking={booking} />
                         ))}
@@ -98,7 +98,7 @@ export default async function Home() {
             <h2 className="mb-3 px-5 text-xs font-bold uppercase leading-4 text-gray-400">
               RECOMENDADOS
             </h2>
-            <Carousel>
+            <Carousel className="w-[90%]">
               <CarouselContent className="flex gap-6">
                 {recommededBarberShops.map((barbershop) => (
                   <CarouselItem key={barbershop.id} className="max-w-[200px]">
@@ -117,8 +117,8 @@ export default async function Home() {
             Barbearias
           </h2>
           <div className="flex gap-4 overflow-x-auto px-5 [&::-webkit-scrollbar]:hidden">
-            <Carousel>
-              <CarouselContent className="flex gap-2 lg:gap-6">
+            <Carousel className="mx-auto w-[80%] lg:w-[90%]">
+              <CarouselContent className="flex lg:gap-5 ">
                 {barbershops.map((barbershop) => (
                   <CarouselItem
                     key={barbershop.id}
@@ -128,6 +128,8 @@ export default async function Home() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
+              <CarouselNext />
+              <CarouselPrevious />
             </Carousel>
           </div>
         </div>
@@ -137,8 +139,8 @@ export default async function Home() {
             Populares
           </h2>
           <div className="flex gap-4 overflow-x-auto px-5 [&::-webkit-scrollbar]:hidden">
-            <Carousel>
-              <CarouselContent className="flex gap-2 lg:gap-6">
+            <Carousel className="mx-auto w-[80%] lg:w-[90%]">
+              <CarouselContent className="flex lg:gap-5 ">
                 {recommededBarberShops.map((barbershop) => (
                   <CarouselItem
                     key={barbershop.id}
@@ -148,6 +150,8 @@ export default async function Home() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
+              <CarouselNext />
+              <CarouselPrevious />
             </Carousel>
           </div>
         </div>

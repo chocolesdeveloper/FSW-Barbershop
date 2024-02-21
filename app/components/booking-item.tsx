@@ -1,6 +1,6 @@
 "use client";
 
-import { Prisma } from "@prisma/client";
+import { Booking, Prisma } from "@prisma/client";
 import { format, isAfter, isFuture } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Loader2 } from "lucide-react";
@@ -103,12 +103,12 @@ export function BookingItem({ booking }: BookingItemProps) {
         </Card>
       </SheetTrigger>
 
-      <SheetContent className="px-0">
+      <SheetContent className="px-0 lg:min-w-[650px]">
         <SheetHeader className="border-b border-secondary px-5 pb-6 text-left">
           <SheetTitle>Informarções da Reserva</SheetTitle>
         </SheetHeader>
 
-        <div className="px-5">
+        <div className="mx-auto px-5 lg:w-[80%]">
           <div className="relative mt-6 h-[180px]">
             <Image
               src="/barbershop-map.png"
