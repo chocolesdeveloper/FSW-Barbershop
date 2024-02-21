@@ -119,7 +119,7 @@ export function About({ barbershop }: AboutProps) {
         ))}
       </div>
 
-      <div className="flex items-center justify-between py-5">
+      <div className="flex items-center justify-between pt-5">
         <span>Em parceria com</span>
 
         <Image
