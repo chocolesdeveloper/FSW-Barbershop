@@ -81,12 +81,20 @@ export default async function Home() {
                     agendamentos
                   </h2>
                   <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-                    <Carousel>
-                      <CarouselContent className="flex gap-6 px-5">
-                        {confirmedBookings.map((booking) => (
-                          <BookingItem key={booking.id} booking={booking} />
-                        ))}
-                      </CarouselContent>
+                    <Carousel className="mx-auto w-full lg:w-[100%]">
+                      {confirmedBookings.length > 0 ? (
+                        <CarouselContent className="mx-auto flex w-[80%] gap-2">
+                          {confirmedBookings.map((booking) => (
+                            <BookingItem key={booking.id} booking={booking} />
+                          ))}
+                        </CarouselContent>
+                      ) : (
+                        <CarouselContent className="flex gap-6 px-5">
+                          {confirmedBookings.map((booking) => (
+                            <BookingItem key={booking.id} booking={booking} />
+                          ))}
+                        </CarouselContent>
+                      )}
                     </Carousel>
                   </div>
                 </>
@@ -94,11 +102,11 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="relative mt-20 hidden min-w-[620px] lg:block">
+          <div className="relative mt-20 hidden w-full lg:block">
             <h2 className="mb-3 px-5 text-xs font-bold uppercase leading-4 text-gray-400">
               RECOMENDADOS
             </h2>
-            <Carousel className="w-[90%]">
+            <Carousel className="w-[30%] xl:w-[55%]">
               <CarouselContent className="flex gap-6">
                 {recommededBarberShops.map((barbershop) => (
                   <CarouselItem key={barbershop.id} className="max-w-[200px]">
